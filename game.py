@@ -39,8 +39,6 @@ class Game:
         self.red_triangles.append(red_triangle)
 
     def run(self):
-        c_x = 50
-        c_y = 50
         self.score = 0
         running = True
         pygame.init()
