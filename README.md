@@ -4,5 +4,5 @@ You can take any parts of the code if needed.
 Good luck! 
 
 Requirements:
-pygame v2.1.4 or newer
+pygame v2.1.4 or newer;
 sqlite3 м3.7.15 or newer
