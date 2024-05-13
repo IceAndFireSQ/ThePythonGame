@@ -4,14 +4,10 @@ import pygame
 import random
 import sqlite3
 from player import Player
-
+from game_consts import *
 def clear():
     os.system('cls' if os.name == 'nt' else 'clear')
 
-BLACK = (0, 0, 0)
-WHITE = (255, 255, 255)
-YELLOW = (255, 255, 0)
-RED = (255, 0, 0)
 class Game:
     def __init__(self):
         self.player_name = ''
@@ -26,15 +22,15 @@ class Game:
                      (name TEXT, points INT)''')
 
     def create_new_yellow_circle(self):
-        x = random.randint(20, 1900)
-        y = random.randint(20, 1050)
+        x = random.randint(20, screen_lenght - 20)
+        y = random.randint(20, screen_widht - 20)
 
         yellow_circle = pygame.Rect(x, y, 10, 10)
         self.yellow_circles.append(yellow_circle)
 
     def create_new_red_triangle(self):
-        x = random.randint(20, 1900)
-        y = random.randint(20, 1050)
+        x = random.randint(20, screen_lenght - 20)
+        y = random.randint(20, screen_widht - 20)
         red_triangle = pygame.Rect(x, y, 20, 20)
         self.red_triangles.append(red_triangle)
 
@@ -44,8 +40,7 @@ class Game:
         self.score = 0
         running = True
         pygame.init()
-        self.size = (1920, 1080)
-        self.screen = pygame.display.set_mode(self.size)
+        self.screen = pygame.display.set_mode(screen_size)
         pygame.display.set_caption("Игра на Pygame")
         self.all_sprites = pygame.sprite.Group()
         player_controls = {'up': pygame.K_UP, 'down': pygame.K_DOWN, 'left': pygame.K_LEFT, 'right': pygame.K_RIGHT}
@@ -88,7 +83,7 @@ class Game:
             self.screen.fill(BLACK)
 
             for yellow_circle in self.yellow_circles:
-                pygame.draw.circle(self.screen, (255, 255, 0), (yellow_circle.x + 5, yellow_circle.y + 5), 5)
+                pygame.draw.circle(self.screen, YELLOW, (yellow_circle.x + 5, yellow_circle.y + 5), 5)
 
                 if self.player.rect.colliderect(yellow_circle):
                     if self.SPEED == 5000:
@@ -102,7 +97,7 @@ class Game:
                         running = False
 
             for red_triangle in self.red_triangles:
-                pygame.draw.polygon(self.screen, (255, 0, 0),
+                pygame.draw.polygon(self.screen, RED,
                                     [(red_triangle.x, red_triangle.y + 20), (red_triangle.x + 10, red_triangle.y),
                                      (red_triangle.x + 20, red_triangle.y + 20)])
 
@@ -112,8 +107,8 @@ class Game:
             current_time = pygame.time.get_ticks()
             if current_time - last_red_triangle_update > self.SPEED:
                 for red_triangle in self.red_triangles:
-                    red_triangle.x = random.randint(20, 1900)
-                    red_triangle.y = random.randint(20, 1050)
+                    red_triangle.x = random.randint(20, screen_lenght - 20)
+                    red_triangle.y = random.randint(20, screen_widht - 20)
                 last_red_triangle_update = current_time
 
             while len(self.yellow_circles) < 25:
@@ -134,8 +129,8 @@ class Game:
         self.screen.fill(BLACK)
         font = pygame.font.SysFont(None, 48)
         if self.score >= 100:
-            text = font.render('You win! Congrats!', True, (255, 255, 255))
-            text_rect = text.get_rect(center=(960, 540))
+            text = font.render('You win! Congrats!', True, WHITE)
+            text_rect = text.get_rect(center=(screen_lenght//2, screen_widht//2))
             self.screen.blit(text, text_rect)
             pygame.display.flip()
             self.save_score(self.player_name, self.score)
@@ -143,21 +138,21 @@ class Game:
             self.screen.fill(BLACK)
             top_scores = self.cursor.execute("SELECT name, points FROM players ORDER BY points DESC LIMIT 5").fetchall()
             font = pygame.font.SysFont(None, 98)
-            text = font.render('TOP PLAYERS', True, (255, 255, 255))
+            text = font.render('TOP PLAYERS', True, WHITE)
             font = pygame.font.SysFont(None, 58)
 
             self.screen.blit(text, (760, 50))
             pygame.display.flip()
             for i, (name, points) in enumerate(top_scores, 1):
                 s = f"{i}. {name}: {points} points"
-                text = font.render(s, True, (255, 255, 255))
+                text = font.render(s, True, WHITE)
                 self.screen.blit(text, (350, 150+i*58))
                 pygame.display.flip()
             pygame.time.wait(8000)
 
         else:
-            text = font.render('Game Over! Go try again!', True, (255, 255, 255))
-            text_rect = text.get_rect(center=(960, 540))
+            text = font.render('Game Over! Go try again!', True, WHITE)
+            text_rect = text.get_rect(center=(screen_lenght//2, screen_widht//2))
             self.screen.blit(text, text_rect)
             pygame.display.flip()
             pygame.time.wait(4000)
