@@ -48,6 +48,9 @@ class Game:
         last_red_triangle_update = pygame.time.get_ticks()
         text_input = ""
         font = pygame.font.Font(None, 70)
+        pygame.mixer.music.load('background_music.mp3')
+        pygame.mixer.music.set_volume(0.24)
+        pygame.mixer.music.play(-1)
         while running:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
